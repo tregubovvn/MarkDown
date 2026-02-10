@@ -1,0 +1,2136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FormulaPuzzle | Генератор головоломок</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Header Styles */
+        header {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+        
+        .logo-text h1 {
+            color: var(--dark);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .logo-text p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--gray-light);
+        }
+        
+        .card-title i {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 24px;
+        }
+        
+        .card-title h2 {
+            color: var(--dark);
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-label i {
+            color: var(--primary);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: #fafbfc;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+            background-color: white;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+        
+        .btn i {
+            font-size: 18px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4cc9f0, #3aa8d0);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(76, 201, 240, 0.3);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #e11570);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(247, 37, 133, 0.3);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #e0871b);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(248, 150, 30, 0.3);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #6419a6);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(114, 9, 183, 0.3);
+        }
+        
+        /* Button Group */
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        /* Formula Blocks */
+        .formula-display {
+            min-height: 140px;
+            border: 2px dashed var(--gray-light);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            background-color: #fafbfc;
+            justify-content: center;
+        }
+        
+        .formula-block {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: grab;
+            user-select: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            position: relative;
+            font-size: 18px;
+        }
+        
+        .formula-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .formula-block.dragging {
+            opacity: 0.7;
+            transform: scale(1.05);
+        }
+        
+        .formula-block.operator {
+            background: linear-gradient(135deg, var(--warning), #e0871b);
+        }
+        
+        .formula-block.variable {
+            background: linear-gradient(135deg, #4cc9f0, #3aa8d0);
+        }
+        
+        .formula-block.greek {
+            background: linear-gradient(135deg, var(--danger), #e11570);
+        }
+        
+        .formula-block.bracket {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+        }
+        
+        .formula-block.number {
+            background: linear-gradient(135deg, #38b000, #2d8c00);
+        }
+        
+        /* Target Area */
+        .target-area {
+            min-height: 180px;
+            border: 3px dashed var(--primary);
+            border-radius: 10px;
+            padding: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            background-color: rgba(67, 97, 238, 0.05);
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+        
+        .target-area.drag-over {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-color: var(--secondary);
+        }
+        
+        .target-placeholder {
+            color: var(--gray);
+            font-size: 16px;
+            text-align: center;
+            width: 100%;
+            font-style: italic;
+        }
+        
+        /* Formula Preview */
+        .formula-preview-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .formula-preview-section h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .formula-preview-section h3 i {
+            color: var(--primary);
+        }
+        
+        .preview-formula {
+            font-size: 2.2rem;
+            min-height: 100px;
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+        
+        /* Feedback */
+        .feedback {
+            padding: 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback.success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border-left: 5px solid #28a745;
+            display: block;
+        }
+        
+        .feedback.error {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+            display: block;
+        }
+        
+        /* Examples */
+        .examples {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+        
+        .examples h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .examples h3 i {
+            color: var(--primary);
+        }
+        
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+        }
+        
+        .example-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid var(--gray-light);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .example-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+        
+        .example-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .example-formula {
+            font-family: monospace;
+            color: var(--gray);
+            font-size: 14px;
+            background: #f8f9fa;
+            padding: 5px 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* Download Section */
+        .download-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-top: 40px;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+        
+        .download-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .download-icon {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 36px;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.3);
+        }
+        
+        .download-content h3 {
+            color: var(--dark);
+            font-size: 26px;
+            margin-bottom: 15px;
+        }
+        
+        .download-content p {
+            color: var(--gray);
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+        
+        .download-btn {
+            background: linear-gradient(135deg, var(--success), #3aa8d0);
+            color: white;
+            font-size: 18px;
+            padding: 18px 40px;
+            border-radius: 50px;
+            box-shadow: 0 8px 20px rgba(76, 201, 240, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(76, 201, 240, 0.4);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid var(--gray-light);
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Delete Button */
+        .delete-btn {
+            margin-left: 10px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+        
+        .delete-btn:hover {
+            background-color: rgba(231, 76, 60, 0.8);
+            color: white;
+        }
+        
+        /* Stats */
+        .stats {
+            display: flex;
+            gap: 25px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            min-width: 180px;
+        }
+        
+        .stat-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+        
+        .stat-info h4 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .header-actions {
+                justify-content: center;
+            }
+            
+            .button-group {
+                justify-content: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .preview-formula {
+                font-size: 1.8rem;
+                padding: 20px;
+            }
+            
+            .examples-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                justify-content: center;
+            }
+            
+            .stat-item {
+                min-width: 100%;
+            }
+        }
+        
+        /* Animation for blocks */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease;
+        }
+        
+        /* Instructions */
+        .instructions {
+            background: linear-gradient(135deg, #e9ecef, #dee2e6);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .instructions h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .instructions h3 i {
+            color: var(--primary);
+        }
+        
+        .instructions ol {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        
+        .instructions li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 14px;
+            font-weight: normal;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>FormulaPuzzle</h1>
+                    <p>Интерактивный конструктор головоломок с формулами</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="resetBtn" class="btn btn-danger">
+                    <i class="fas fa-redo"></i> Сбросить всё
+                </button>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel: Create Puzzle -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-plus-circle"></i>
+                    <h2>Создание головоломки</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-square-root-alt"></i>
+                        Введите формулу в формате LaTeX:
+                    </label>
+                    <input type="text" id="formulaInput" class="form-control" 
+                           placeholder="Пример: \alpha_t = АДи + АДр - АДс" 
+                           value="\alpha_t = АДи + АДр - АДс">
+                </div>
+                
+                <div class="examples">
+                    <h3><i class="fas fa-lightbulb"></i> Примеры формул</h3>
+                    <div class="examples-grid" id="examplesList">
+                        <div class="example-item" data-formula="\alpha_t = АДи + АДр - АДс">
+                            <div class="example-name">Формула с альфа</div>
+                            <div class="example-formula">\alpha_t = АДи + АДр - АДс</div>
+                        </div>
+                        <div class="example-item" data-formula="F = m \cdot a">
+                            <div class="example-name">Второй закон Ньютона</div>
+                            <div class="example-formula">F = m \cdot a</div>
+                        </div>
+                        <div class="example-item" data-formula="E = mc^2">
+                            <div class="example-name">Энергия покоя</div>
+                            <div class="example-formula">E = mc^2</div>
+                        </div>
+                        <div class="example-item" data-formula="v = v_0 + at">
+                            <div class="example-name">Скорость при ускорении</div>
+                            <div class="example-formula">v = v_0 + at</div>
+                        </div>
+                        <div class="example-item" data-formula="x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}">
+                            <div class="example-name">Корни квадратного уравнения</div>
+                            <div class="example-formula">x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}</div>
+                        </div>
+                        <div class="example-item" data-formula="a^2 + b^2 = c^2">
+                            <div class="example-name">Теорема Пифагора</div>
+                            <div class="example-formula">a^2 + b^2 = c^2</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="generateBtn" class="btn btn-primary">
+                        <i class="fas fa-cube"></i> Создать головоломку
+                    </button>
+                    <button id="shuffleBtn" class="btn btn-secondary">
+                        <i class="fas fa-random"></i> Перемешать блоки
+                    </button>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                            <i class="fas fa-cubes"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4 id="blockCount">0</h4>
+                            <p>Блоков формулы</p>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, var(--warning), #e0871b);">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h4 id="shuffleStatus">Нет</h4>
+                            <p>Перемешано</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel: Preview Puzzle -->
+            <div class="card">
+                <div class="card-title">
+                    <i class="fas fa-eye"></i>
+                    <h2>Предпросмотр головоломки</h2>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-puzzle-piece"></i>
+                        Блоки формулы (перетащите):
+                    </label>
+                    <div id="blocksContainer" class="formula-display">
+                        <div class="target-placeholder">
+                            <i class="fas fa-info-circle"></i> Создайте головоломку, чтобы увидеть блоки
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-th-large"></i>
+                        Область сборки:
+                    </label>
+                    <div id="targetArea" class="target-area">
+                        <div class="target-placeholder">
+                            <i class="fas fa-hand-pointer"></i> Перетащите сюда блоки формулы
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="formula-preview-section">
+                    <h3><i class="fas fa-chart-line"></i> Собранная формула:</h3>
+                    <div id="previewFormula" class="preview-formula">
+                        Формула появится здесь после сборки
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="checkBtn" class="btn btn-success">
+                        <i class="fas fa-check"></i> Проверить решение
+                    </button>
+                    <button id="showSolutionBtn" class="btn btn-warning">
+                        <i class="fas fa-lightbulb"></i> Показать ответ
+                    </button>
+                </div>
+                
+                <div id="feedback" class="feedback"></div>
+                
+                <div class="instructions">
+                    <h3><i class="fas fa-graduation-cap"></i> Как использовать головоломку:</h3>
+                    <ol>
+                        <li>Перетащите блоки формулы в область сборки</li>
+                        <li>Расположите их в правильном порядке</li>
+                        <li>Собранная формула отобразится внизу в реальном времени</li>
+                        <li>Нажмите "Проверить решение" для проверки</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Download Section -->
+        <div class="download-section">
+            <div class="download-content">
+                <div class="download-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <h3>Скачать готовую головоломку</h3>
+                <p>
+                    Создайте автономный HTML-файл с вашей головоломкой. Файл содержит всё необходимое: 
+                    перемешанные блоки формулы, интерактивный интерфейс и проверку решения. 
+                    Идеально для использования в обучении, тестировании или просто для развлечения!
+                </p>
+                
+                <div class="button-group" style="justify-content: center;">
+                    <button id="saveBtn" class="btn download-btn">
+                        <i class="fas fa-file-download"></i> Скачать HTML файл головоломки
+                    </button>
+                </div>
+                
+                <div class="instructions" style="margin-top: 30px; background: white;">
+                    <h3><i class="fas fa-info-circle"></i> Особенности сохранённой головоломки:</h3>
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li><i class="fas fa-check text-success"></i> Полностью автономный HTML файл</li>
+                        <li><i class="fas fa-check text-success"></i> Блоки формулы перемешаны случайным образом</li>
+                        <li><i class="fas fa-check text-success"></i> Интерактивное перетаскивание блоков</li>
+                        <li><i class="fas fa-check text-success"></i> Отображение собранной формулы в реальном времени</li>
+                        <li><i class="fas fa-check text-success"></i> Проверка решения и показ правильного ответа</li>
+                        <li><i class="fas fa-check text-success"></i> Адаптивный дизайн для всех устройств</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            <div class="footer-links">
+                <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                <a href="#"><i class="fas fa-envelope"></i> Обратная связь</a>
+                <a href="#"><i class="fas fa-share-alt"></i> Поделиться</a>
+            </div>
+            <p>FormulaPuzzle &copy; 2023 | Интерактивный генератор головоломок с формулами</p>
+            <p>Использует MathJax для отображения математических формул</p>
+        </footer>
+    </div>
+
+    <script>
+        // Инициализация переменных
+        let originalFormulaLatex = '';
+        let formulaBlocks = [];
+        let draggedBlock = null;
+        
+        // DOM элементы
+        const formulaInput = document.getElementById('formulaInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const checkBtn = document.getElementById('checkBtn');
+        const shuffleBtn = document.getElementById('shuffleBtn');
+        const showSolutionBtn = document.getElementById('showSolutionBtn');
+        const blocksContainer = document.getElementById('blocksContainer');
+        const targetArea = document.getElementById('targetArea');
+        const previewFormula = document.getElementById('previewFormula');
+        const feedback = document.getElementById('feedback');
+        const blockCount = document.getElementById('blockCount');
+        const shuffleStatus = document.getElementById('shuffleStatus');
+        const examplesList = document.getElementById('examplesList');
+        
+        // Простая функция для разбора формулы на блоки
+        function parseFormulaToBlocks(latexFormula) {
+            const parts = [];
+            let current = '';
+            
+            for (let i = 0; i < latexFormula.length; i++) {
+                const char = latexFormula[i];
+                
+                if (char === '\\') {
+                    // Начало LaTeX команды
+                    if (current) parts.push(current);
+                    current = '\\';
+                    
+                    // Читаем команду
+                    i++;
+                    while (i < latexFormula.length && /[a-zA-Z]/.test(latexFormula[i])) {
+                        current += latexFormula[i];
+                        i++;
+                    }
+                    i--; // Возвращаемся на последний символ
+                    
+                    parts.push(current);
+                    current = '';
+                }
+                else if ('+-=*/^(){}[]'.includes(char)) {
+                    // Операторы и скобки
+                    if (current) parts.push(current);
+                    parts.push(char);
+                    current = '';
+                }
+                else if (char === ' ') {
+                    // Пробел
+                    if (current) parts.push(current);
+                    current = '';
+                }
+                else {
+                    // Обычный символ
+                    current += char;
+                }
+            }
+            
+            if (current) parts.push(current);
+            
+            return parts.filter(p => p.trim() !== '');
+        }
+        
+        // Функция для определения типа блока
+        function getBlockType(block) {
+            if (block.startsWith('\\')) return 'greek';
+            if ('+-=*/^'.includes(block)) return 'operator';
+            if ('(){}[]'.includes(block)) return 'bracket';
+            if (/^\d+$/.test(block)) return 'number';
+            return 'variable';
+        }
+        
+        // Функция для перемешивания массива
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+        
+        // Функция для обновления отображения собранной формулы
+        function updateFormulaPreview() {
+            const blocks = targetArea.querySelectorAll('.formula-block');
+            
+            if (blocks.length === 0) {
+                previewFormula.innerHTML = '<span style="color: #6c757d; font-style: italic;">Формула появится здесь после сборки</span>';
+                if (window.MathJax) {
+                    MathJax.typesetPromise([previewFormula]);
+                }
+                return;
+            }
+            
+            const formulaParts = Array.from(blocks).map(block => block.getAttribute('data-value'));
+            const userFormula = formulaParts.join(' ');
+            
+            previewFormula.innerHTML = `\\(${userFormula}\\)`;
+            
+            // Перерисовываем MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise([previewFormula]);
+            }
+        }
+        
+        // Функция для генерации блоков формулы
+        function generateFormulaBlocks() {
+            const latexFormula = formulaInput.value.trim();
+            
+            if (!latexFormula) {
+                showFeedback('Пожалуйста, введите формулу в формате LaTeX', 'error');
+                return;
+            }
+            
+            originalFormulaLatex = latexFormula;
+            
+            // Разбираем формулу на блоки
+            formulaBlocks = parseFormulaToBlocks(latexFormula);
+            
+            // Перемешиваем блоки
+            const shuffledBlocks = shuffleArray(formulaBlocks);
+            
+            // Очищаем контейнер с блоками
+            blocksContainer.innerHTML = '';
+            
+            // Создаем блоки для каждого компонента формулы
+            shuffledBlocks.forEach(block => {
+                createBlockElement(block, blocksContainer);
+            });
+            
+            // Очищаем область сборки и предпросмотр
+            targetArea.innerHTML = '<div class="target-placeholder"><i class="fas fa-hand-pointer"></i> Перетащите сюда блоки формулы</div>';
+            previewFormula.innerHTML = '<span style="color: #6c757d; font-style: italic;">Формула появится здесь после сборки</span>';
+            feedback.className = 'feedback';
+            feedback.textContent = '';
+            
+            // Обновляем счетчик блоков
+            blockCount.textContent = formulaBlocks.length;
+            shuffleStatus.textContent = 'Да';
+            shuffleStatus.parentElement.parentElement.querySelector('h4').style.color = '#38b000';
+            
+            // Показываем сообщение об успехе
+            showFeedback('Головоломка успешно создана! Теперь перетащите блоки в область сборки.', 'success');
+            
+            // Перерисовываем MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise([blocksContainer, previewFormula]);
+            }
+        }
+        
+        // Функция для создания элемента блока
+        function createBlockElement(blockValue, container) {
+            const blockElement = document.createElement('div');
+            const blockType = getBlockType(blockValue);
+            
+            // Отображаемое значение
+            let displayValue = blockValue;
+            if (blockValue === '\\alpha_t') displayValue = 'αₜ';
+            else if (blockValue === '\\cdot') displayValue = '·';
+            else if (blockValue === '\\pm') displayValue = '±';
+            else if (blockValue === '\\sqrt') displayValue = '√';
+            else if (blockValue === '\\frac') displayValue = 'дробь';
+            else if (blockValue === '\\alpha') displayValue = 'α';
+            else if (blockValue === '\\beta') displayValue = 'β';
+            else if (blockValue === '\\gamma') displayValue = 'γ';
+            else if (blockValue === '\\theta') displayValue = 'θ';
+            else if (blockValue === '\\pi') displayValue = 'π';
+            else if (blockValue === '\\infty') displayValue = '∞';
+            else if (blockValue === '\\int') displayValue = '∫';
+            else if (blockValue === '\\sum') displayValue = '∑';
+            
+            blockElement.className = `formula-block ${blockType} pulse`;
+            blockElement.textContent = displayValue;
+            blockElement.setAttribute('data-value', blockValue);
+            blockElement.setAttribute('draggable', 'true');
+            
+            // Добавляем обработчики событий перетаскивания
+            blockElement.addEventListener('dragstart', handleDragStart);
+            blockElement.addEventListener('dragend', handleDragEnd);
+            
+            container.appendChild(blockElement);
+        }
+        
+        // Функция для отображения сообщений
+        function showFeedback(message, type) {
+            feedback.className = `feedback ${type}`;
+            feedback.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+            
+            // Автоматическое скрытие сообщения через 5 секунд
+            setTimeout(() => {
+                feedback.className = 'feedback';
+                feedback.textContent = '';
+            }, 5000);
+        }
+        
+        // Обработчики событий перетаскивания
+        function handleDragStart(e) {
+            draggedBlock = this;
+            this.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', this.getAttribute('data-value'));
+            
+            // Добавляем визуальный эффект
+            this.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.2)';
+        }
+        
+        function handleDragEnd() {
+            this.classList.remove('dragging');
+            draggedBlock = null;
+            
+            // Убираем визуальный эффект
+            this.style.boxShadow = '';
+        }
+        
+        // Обработчики событий для области сброса
+        targetArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+        
+        targetArea.addEventListener('dragleave', function() {
+            this.classList.remove('drag-over');
+        });
+        
+        targetArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            // Получаем значение перетаскиваемого блока
+            const dataValue = e.dataTransfer.getData('text/plain');
+            
+            if (dataValue) {
+                // Убираем текст-подсказку
+                if (this.querySelector('.target-placeholder')) {
+                    this.innerHTML = '';
+                }
+                
+                // Создаем новый блок в области сборки
+                createBlockInTargetArea(dataValue);
+                
+                // Обновляем отображение формулы
+                updateFormulaPreview();
+            }
+        });
+        
+        // Функция для создания блока в области сборки
+        function createBlockInTargetArea(blockValue) {
+            const blockElement = document.createElement('div');
+            const blockType = getBlockType(blockValue);
+            
+            // Отображаемое значение
+            let displayValue = blockValue;
+            if (blockValue === '\\alpha_t') displayValue = 'αₜ';
+            else if (blockValue === '\\cdot') displayValue = '·';
+            else if (blockValue === '\\pm') displayValue = '±';
+            else if (blockValue === '\\sqrt') displayValue = '√';
+            else if (blockValue === '\\frac') displayValue = 'дробь';
+            else if (blockValue === '\\alpha') displayValue = 'α';
+            else if (blockValue === '\\beta') displayValue = 'β';
+            else if (blockValue === '\\gamma') displayValue = 'γ';
+            else if (blockValue === '\\theta') displayValue = 'θ';
+            else if (blockValue === '\\pi') displayValue = 'π';
+            else if (blockValue === '\\infty') displayValue = '∞';
+            else if (blockValue === '\\int') displayValue = '∫';
+            else if (blockValue === '\\sum') displayValue = '∑';
+            
+            blockElement.className = `formula-block ${blockType} pulse`;
+            blockElement.textContent = displayValue;
+            blockElement.setAttribute('data-value', blockValue);
+            blockElement.setAttribute('draggable', 'true');
+            
+            // Добавляем обработчики событий перетаскивания
+            blockElement.addEventListener('dragstart', handleDragStart);
+            blockElement.addEventListener('dragend', handleDragEnd);
+            
+            // Добавляем кнопку удаления
+            const deleteBtn = document.createElement('span');
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+            deleteBtn.title = 'Удалить блок';
+            deleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.parentElement.remove();
+                updateFormulaPreview();
+                
+                // Если область сборки пуста, показываем placeholder
+                if (targetArea.querySelectorAll('.formula-block').length === 0) {
+                    targetArea.innerHTML = '<div class="target-placeholder"><i class="fas fa-hand-pointer"></i> Перетащите сюда блоки формулы</div>';
+                }
+            });
+            
+            blockElement.appendChild(deleteBtn);
+            targetArea.appendChild(blockElement);
+        }
+        
+        // Функция для перемешивания блоков
+        function shuffleBlocks() {
+            if (formulaBlocks.length === 0) {
+                showFeedback('Сначала создайте головоломку!', 'error');
+                return;
+            }
+            
+            // Собираем текущие блоки из контейнера
+            const currentBlocks = Array.from(blocksContainer.querySelectorAll('.formula-block'))
+                .map(block => block.getAttribute('data-value'));
+            
+            // Перемешиваем блоки
+            const shuffledBlocks = shuffleArray(currentBlocks);
+            
+            // Очищаем и пересоздаем контейнер
+            blocksContainer.innerHTML = '';
+            shuffledBlocks.forEach(block => {
+                createBlockElement(block, blocksContainer);
+            });
+            
+            shuffleStatus.textContent = 'Да';
+            shuffleStatus.parentElement.parentElement.querySelector('h4').style.color = '#38b000';
+            
+            showFeedback('Блоки успешно перемешаны!', 'success');
+            
+            // Перерисовываем MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise([blocksContainer]);
+            }
+        }
+        
+        // Функция для проверки формулы
+        function checkFormula() {
+            const blocks = targetArea.querySelectorAll('.formula-block');
+            
+            if (blocks.length === 0) {
+                showFeedback('Область сборки пуста! Перетащите блоки формулы.', 'error');
+                return;
+            }
+            
+            const formulaParts = Array.from(blocks).map(block => block.getAttribute('data-value'));
+            const userFormula = formulaParts.join(' ');
+            
+            // Сравниваем с исходной формулой
+            if (userFormula === originalFormulaLatex) {
+                showFeedback('Поздравляем! Вы правильно собрали формулу!', 'success');
+                
+                // Добавляем анимацию успеха
+                blocks.forEach(block => {
+                    block.style.animation = 'pulse 0.5s ease 3';
+                });
+            } else {
+                showFeedback('Формула собрана неправильно. Попробуйте еще раз!', 'error');
+            }
+        }
+        
+        // Функция для показа решения
+        function showSolution() {
+            if (formulaBlocks.length === 0) {
+                showFeedback('Сначала создайте головоломку!', 'error');
+                return;
+            }
+            
+            // Очищаем область сборки
+            targetArea.innerHTML = '';
+            
+            // Добавляем блоки в правильном порядке
+            formulaBlocks.forEach(block => {
+                createBlockInTargetArea(block);
+            });
+            
+            // Обновляем отображение формулы
+            updateFormulaPreview();
+            
+            showFeedback('Правильное решение показано. Сравните со своим вариантом.', 'success');
+        }
+        
+        // Функция для сохранения HTML файла
+        function saveHtmlFile() {
+            if (formulaBlocks.length === 0) {
+                showFeedback('Сначала создайте головоломку!', 'error');
+                return;
+            }
+            
+            // Получаем текущие блоки
+            const currentBlocks = Array.from(blocksContainer.querySelectorAll('.formula-block'))
+                .map(block => block.getAttribute('data-value'));
+            
+            // Получаем блоки в области сборки
+            const targetBlocks = Array.from(targetArea.querySelectorAll('.formula-block'))
+                .map(block => block.getAttribute('data-value'));
+            
+            // Экранируем исходную формулу
+            const escapedFormula = originalFormulaLatex
+                .replace(/\\/g, '\\\\')
+                .replace(/"/g, '\\"')
+                .replace(/'/g, "\\'")
+                .replace(/\n/g, '\\n');
+            
+            // HTML для блоков в контейнере
+            const blocksHtml = currentBlocks.map(block => {
+                const blockType = getBlockType(block);
+                let displayValue = block;
+                if (block === '\\alpha_t') displayValue = 'αₜ';
+                else if (block === '\\cdot') displayValue = '·';
+                else if (block === '\\pm') displayValue = '±';
+                else if (block === '\\sqrt') displayValue = '√';
+                else if (block === '\\frac') displayValue = 'дробь';
+                else if (block === '\\alpha') displayValue = 'α';
+                else if (block === '\\beta') displayValue = 'β';
+                else if (block === '\\gamma') displayValue = 'γ';
+                
+                const safeBlockValue = block.replace(/"/g, '&quot;');
+                
+                return `<div class="formula-block ${blockType}" data-value="${safeBlockValue}" draggable="true">${displayValue}</div>`;
+            }).join('\n            ');
+            
+            // HTML для блоков в области сборки
+            const targetBlocksHtml = targetBlocks.length > 0 ? 
+                targetBlocks.map(block => {
+                    const blockType = getBlockType(block);
+                    let displayValue = block;
+                    if (block === '\\alpha_t') displayValue = 'αₜ';
+                    else if (block === '\\cdot') displayValue = '·';
+                    else if (block === '\\pm') displayValue = '±';
+                    else if (block === '\\sqrt') displayValue = '√';
+                    else if (block === '\\frac') displayValue = 'дробь';
+                    else if (block === '\\alpha') displayValue = 'α';
+                    else if (block === '\\beta') displayValue = 'β';
+                    else if (block === '\\gamma') displayValue = 'γ';
+                    
+                    const safeBlockValue = block.replace(/"/g, '&quot;');
+                    
+                    return `<div class="formula-block ${blockType}" data-value="${safeBlockValue}" draggable="true">${displayValue}<span class="delete-btn"><i class="fas fa-times"></i></span></div>`;
+                }).join('\n            ') : 
+                '<div class="target-placeholder"><i class="fas fa-hand-pointer"></i> Перетащите сюда блоки формулы</div>';
+            
+            // HTML для предпросмотра формулы
+            const previewFormulaHtml = targetBlocks.length > 0 ? 
+                `\\(${targetBlocks.join(' ')}\\)` : 
+                '<span style="color: #6c757d; font-style: italic;">Формула появится здесь после сборки</span>';
+            
+            // Генерируем HTML-код для сохранения
+            const htmlCode = `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Головоломка: Собери формулу</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --border-radius: 12px;
+            --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 25px 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+        
+        h1 {
+            color: var(--dark);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .task-description {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .formula-display {
+            min-height: 140px;
+            border: 2px dashed var(--gray-light);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            background-color: #fafbfc;
+            justify-content: center;
+        }
+        
+        .formula-block {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: grab;
+            user-select: none;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+        }
+        
+        .formula-block:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .formula-block.dragging {
+            opacity: 0.7;
+            transform: scale(1.05);
+        }
+        
+        .formula-block.operator {
+            background: linear-gradient(135deg, var(--warning), #e0871b);
+        }
+        
+        .formula-block.variable {
+            background: linear-gradient(135deg, #4cc9f0, #3aa8d0);
+        }
+        
+        .formula-block.greek {
+            background: linear-gradient(135deg, var(--danger), #e11570);
+        }
+        
+        .formula-block.bracket {
+            background: linear-gradient(135deg, #6c757d, #5a6268);
+        }
+        
+        .target-area {
+            min-height: 180px;
+            border: 3px dashed var(--primary);
+            border-radius: 10px;
+            padding: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            background-color: rgba(67, 97, 238, 0.05);
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+        
+        .target-area.drag-over {
+            background-color: rgba(67, 97, 238, 0.1);
+            border-color: var(--secondary);
+        }
+        
+        .target-placeholder {
+            color: var(--gray);
+            font-size: 16px;
+            text-align: center;
+            width: 100%;
+            font-style: italic;
+        }
+        
+        .formula-preview-section {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 25px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .formula-preview-section h3 {
+            color: var(--dark);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .preview-formula {
+            font-size: 2.2rem;
+            min-height: 100px;
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 25px 0;
+            justify-content: center;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .btn-check {
+            background: linear-gradient(135deg, #4cc9f0, #3aa8d0);
+            color: white;
+        }
+        
+        .btn-check:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(76, 201, 240, 0.3);
+        }
+        
+        .btn-reset {
+            background: linear-gradient(135deg, var(--danger), #e11570);
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(247, 37, 133, 0.3);
+        }
+        
+        .btn-show-solution {
+            background: linear-gradient(135deg, var(--warning), #e0871b);
+            color: white;
+        }
+        
+        .btn-show-solution:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(248, 150, 30, 0.3);
+        }
+        
+        .feedback {
+            padding: 18px;
+            border-radius: 10px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .feedback.success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border-left: 5px solid #28a745;
+            display: block;
+        }
+        
+        .feedback.error {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border-left: 5px solid #dc3545;
+            display: block;
+        }
+        
+        .delete-btn {
+            margin-left: 10px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: var(--transition);
+        }
+        
+        .delete-btn:hover {
+            background-color: rgba(231, 76, 60, 0.8);
+            color: white;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-light);
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 0.5s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .preview-formula {
+                font-size: 1.8rem;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Головоломка: Собери формулу</h1>
+            <p>Перетащите блоки с компонентами формулы в область сборки</p>
+        </header>
+        
+        <div class="task-description">
+            <p><strong>Задание:</strong> Соберите формулу из перемешанных блоков в правильном порядке.</p>
+            <p>Перетаскивайте блоки в область сборки и наблюдайте за формулой внизу.</p>
+        </div>
+        
+        <h2>Блоки формулы</h2>
+        <div id="blocksContainer" class="formula-display">
+${blocksHtml}
+        </div>
+        
+        <h2>Область сборки</h2>
+        <div id="targetArea" class="target-area">
+${targetBlocksHtml}
+        </div>
+        
+        <div class="formula-preview-section">
+            <h3>Собранная формула:</h3>
+            <div id="previewFormula" class="preview-formula">
+                ${previewFormulaHtml}
+            </div>
+        </div>
+        
+        <div class="button-group">
+            <button id="checkBtn" class="btn btn-check">
+                <i class="fas fa-check"></i> Проверить решение
+            </button>
+            <button id="resetBtn" class="btn btn-reset">
+                <i class="fas fa-redo"></i> Сбросить
+            </button>
+            <button id="showSolutionBtn" class="btn btn-show-solution">
+                <i class="fas fa-lightbulb"></i> Показать ответ
+            </button>
+        </div>
+        
+        <div id="feedback" class="feedback"></div>
+        
+        <footer>
+            <p>Головоломка создана с помощью FormulaPuzzle</p>
+            <p>Использует MathJax для отображения математических формул</p>
+        </footer>
+    </div>
+
+    <script>
+        // Данные головоломки
+        const originalFormulaLatex = "${escapedFormula}";
+        let draggedBlock = null;
+        
+        // DOM элементы
+        const blocksContainer = document.getElementById('blocksContainer');
+        const targetArea = document.getElementById('targetArea');
+        const previewFormula = document.getElementById('previewFormula');
+        const checkBtn = document.getElementById('checkBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const showSolutionBtn = document.getElementById('showSolutionBtn');
+        const feedback = document.getElementById('feedback');
+        
+        // Функция для определения типа блока
+        function getBlockType(block) {
+            if (block.startsWith('\\\\')) return 'greek';
+            if ('+-=*/^'.includes(block)) return 'operator';
+            if ('(){}[]'.includes(block)) return 'bracket';
+            if (/^\\\\d+$/.test(block)) return 'number';
+            return 'variable';
+        }
+        
+        // Функция для обновления отображения собранной формулы
+        function updateFormulaPreview() {
+            const blocks = targetArea.querySelectorAll('.formula-block');
+            
+            if (blocks.length === 0) {
+                previewFormula.innerHTML = '<span style="color: #6c757d; font-style: italic;">Формула появится здесь после сборки</span>';
+                if (window.MathJax) {
+                    MathJax.typesetPromise([previewFormula]);
+                }
+                return;
+            }
+            
+            const formulaParts = Array.from(blocks).map(block => block.getAttribute('data-value'));
+            const userFormula = formulaParts.join(' ');
+            
+            previewFormula.innerHTML = '\\\\(' + userFormula + '\\\\)';
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([previewFormula]);
+            }
+        }
+        
+        // Функция для отображения сообщений
+        function showFeedback(message, type) {
+            feedback.className = 'feedback ' + type;
+            feedback.innerHTML = '<i class="fas fa-' + (type === 'success' ? 'check-circle' : 'exclamation-circle') + '"></i> ' + message;
+            
+            setTimeout(() => {
+                feedback.className = 'feedback';
+                feedback.textContent = '';
+            }, 5000);
+        }
+        
+        // Обработчики событий перетаскивания
+        function handleDragStart(e) {
+            draggedBlock = this;
+            this.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', this.getAttribute('data-value'));
+            this.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.2)';
+        }
+        
+        function handleDragEnd() {
+            this.classList.remove('dragging');
+            draggedBlock = null;
+            this.style.boxShadow = '';
+        }
+        
+        // Добавляем обработчики для блоков формулы
+        document.querySelectorAll('#blocksContainer .formula-block').forEach(block => {
+            block.addEventListener('dragstart', handleDragStart);
+            block.addEventListener('dragend', handleDragEnd);
+        });
+        
+        // Добавляем обработчики для блоков в области сборки
+        function addDragHandlersToTargetBlocks() {
+            document.querySelectorAll('#targetArea .formula-block').forEach(block => {
+                block.addEventListener('dragstart', handleDragStart);
+                block.addEventListener('dragend', handleDragEnd);
+                
+                const deleteBtn = block.querySelector('.delete-btn');
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        this.parentElement.remove();
+                        updateFormulaPreview();
+                        
+                        if (targetArea.querySelectorAll('.formula-block').length === 0) {
+                            targetArea.innerHTML = '<div class="target-placeholder"><i class="fas fa-hand-pointer"></i> Перетащите сюда блоки формулы</div>';
+                        }
+                    });
+                }
+            });
+        }
+        
+        // Инициализируем обработчики для существующих блоков в области сборки
+        addDragHandlersToTargetBlocks();
+        
+        // Обработчики событий для области сброса
+        targetArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('drag-over');
+        });
+        
+        targetArea.addEventListener('dragleave', function() {
+            this.classList.remove('drag-over');
+        });
+        
+        targetArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('drag-over');
+            
+            const dataValue = e.dataTransfer.getData('text/plain');
+            
+            if (dataValue) {
+                if (this.querySelector('.target-placeholder')) {
+                    this.innerHTML = '';
+                }
+                
+                const blockElement = document.createElement('div');
+                const blockType = getBlockType(dataValue);
+                
+                let displayValue = dataValue;
+                if (dataValue === '\\\\\\\\alpha_t') displayValue = 'αₜ';
+                else if (dataValue === '\\\\\\\\cdot') displayValue = '·';
+                else if (dataValue === '\\\\\\\\pm') displayValue = '±';
+                else if (dataValue === '\\\\\\\\sqrt') displayValue = '√';
+                else if (dataValue === '\\\\\\\\frac') displayValue = 'дробь';
+                else if (dataValue === '\\\\\\\\alpha') displayValue = 'α';
+                else if (dataValue === '\\\\\\\\beta') displayValue = 'β';
+                else if (dataValue === '\\\\\\\\gamma') displayValue = 'γ';
+                
+                blockElement.className = 'formula-block ' + blockType + ' pulse';
+                blockElement.textContent = displayValue;
+                blockElement.setAttribute('data-value', dataValue);
+                blockElement.setAttribute('draggable', 'true');
+                
+                blockElement.addEventListener('dragstart', handleDragStart);
+                blockElement.addEventListener('dragend', handleDragEnd);
+                
+                const deleteBtn = document.createElement('span');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                deleteBtn.title = 'Удалить блок';
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.parentElement.remove();
+                    updateFormulaPreview();
+                    
+                    if (targetArea.querySelectorAll('.formula-block').length === 0) {
+                        targetArea.innerHTML = '<div class="target-placeholder"><i class="fas fa-hand-pointer"></i> Перетащите сюда блоки формулы</div>';
+                    }
+                });
+                
+                blockElement.appendChild(deleteBtn);
+                this.appendChild(blockElement);
+                
+                updateFormulaPreview();
+            }
+        });
+        
+        // Функция для проверки формулы
+        function checkFormula() {
+            const blocks = targetArea.querySelectorAll('.formula-block');
+            
+            if (blocks.length === 0) {
+                showFeedback('Область сборки пуста! Перетащите блоки формулы.', 'error');
+                return;
+            }
+            
+            const formulaParts = Array.from(blocks).map(block => block.getAttribute('data-value'));
+            const userFormula = formulaParts.join(' ');
+            
+            if (userFormula === originalFormulaLatex) {
+                showFeedback('Поздравляем! Вы правильно собрали формулу!', 'success');
+                
+                blocks.forEach(block => {
+                    block.style.animation = 'pulse 0.5s ease 3';
+                });
+            } else {
+                showFeedback('Формула собрана неправильно. Попробуйте еще раз!', 'error');
+            }
+        }
+        
+        // Функция для сброса области сборки
+        function resetTargetArea() {
+            targetArea.innerHTML = '<div class="target-placeholder"><i class="fas fa-hand-pointer"></i> Перетащите сюда блоки формулы</div>';
+            previewFormula.innerHTML = '<span style="color: #6c757d; font-style: italic;">Формула появится здесь после сборки</span>';
+            feedback.className = 'feedback';
+            feedback.textContent = '';
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([previewFormula]);
+            }
+        }
+        
+        // Функция для показа решения
+        function showSolution() {
+            const formulaParts = [];
+            let current = '';
+            
+            for (let i = 0; i < originalFormulaLatex.length; i++) {
+                const char = originalFormulaLatex[i];
+                
+                if (char === '\\\\\\\\') {
+                    if (current) formulaParts.push(current);
+                    current = '\\\\\\\\';
+                    
+                    i++;
+                    while (i < originalFormulaLatex.length && /[a-zA-Z]/.test(originalFormulaLatex[i])) {
+                        current += originalFormulaLatex[i];
+                        i++;
+                    }
+                    i--;
+                    
+                    formulaParts.push(current);
+                    current = '';
+                }
+                else if ('+-=*/^(){}[]'.includes(char)) {
+                    if (current) formulaParts.push(current);
+                    formulaParts.push(char);
+                    current = '';
+                }
+                else if (char === ' ') {
+                    if (current) formulaParts.push(current);
+                    current = '';
+                }
+                else {
+                    current += char;
+                }
+            }
+            
+            if (current) formulaParts.push(current);
+            
+            const solutionBlocks = formulaParts.filter(p => p.trim() !== '');
+            
+            // Очищаем область сборки и добавляем правильные блоки
+            targetArea.innerHTML = '';
+            solutionBlocks.forEach(block => {
+                const blockElement = document.createElement('div');
+                const blockType = getBlockType(block);
+                
+                let displayValue = block;
+                if (block === '\\\\\\\\alpha_t') displayValue = 'αₜ';
+                else if (block === '\\\\\\\\cdot') displayValue = '·';
+                else if (block === '\\\\\\\\pm') displayValue = '±';
+                else if (block === '\\\\\\\\sqrt') displayValue = '√';
+                else if (block === '\\\\\\\\frac') displayValue = 'дробь';
+                else if (block === '\\\\\\\\alpha') displayValue = 'α';
+                else if (block === '\\\\\\\\beta') displayValue = 'β';
+                else if (block === '\\\\\\\\gamma') displayValue = 'γ';
+                
+                blockElement.className = 'formula-block ' + blockType;
+                blockElement.textContent = displayValue;
+                blockElement.setAttribute('data-value', block);
+                blockElement.setAttribute('draggable', 'true');
+                
+                blockElement.addEventListener('dragstart', handleDragStart);
+                blockElement.addEventListener('dragend', handleDragEnd);
+                
+                const deleteBtn = document.createElement('span');
+                deleteBtn.className = 'delete-btn';
+                deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+                deleteBtn.title = 'Удалить блок';
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.parentElement.remove();
+                    updateFormulaPreview();
+                    
+                    if (targetArea.querySelectorAll('.formula-block').length === 0) {
+                        targetArea.innerHTML = '<div class="target-placeholder"><i class="fas fa-hand-pointer"></i> Перетащите сюда блоки формулы</div>';
+                    }
+                });
+                
+                blockElement.appendChild(deleteBtn);
+                targetArea.appendChild(blockElement);
+            });
+            
+            updateFormulaPreview();
+            showFeedback('Правильное решение показано. Сравните со своим вариантом.', 'success');
+        }
+        
+        // Добавляем обработчики событий
+        checkBtn.addEventListener('click', checkFormula);
+        resetBtn.addEventListener('click', resetTargetArea);
+        showSolutionBtn.addEventListener('click', showSolution);
+        
+        // Инициализируем отображение формулы
+        updateFormulaPreview();
+        
+        // Инициализируем MathJax
+        if (window.MathJax) {
+            MathJax.typesetPromise();
+        }
+    </script>
+</body>
+</html>`;
+            
+            // Создаем Blob и ссылку для скачивания
+            const blob = new Blob([htmlCode], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            
+            // Генерируем имя файла
+            const formulaName = originalFormulaLatex
+                .replace(/[^a-zA-Z0-9а-яА-Я\s]/g, '')
+                .replace(/\s+/g, '_')
+                .substring(0, 40) || 'formula';
+            a.download = `FormulaPuzzle_${formulaName}.html`;
+            
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showFeedback(`Головоломка скачана как "${a.download}"`, 'success');
+        }
+        
+        // Функция для сброса всего
+        function resetAll() {
+            formulaInput.value = '\\alpha_t = АДи + АДр - АДс';
+            originalFormulaLatex = '';
+            formulaBlocks = [];
+            blocksContainer.innerHTML = '<div class="target-placeholder"><i class="fas fa-info-circle"></i> Создайте головоломку, чтобы увидеть блоки</div>';
+            targetArea.innerHTML = '<div class="target-placeholder"><i class="fas fa-hand-pointer"></i> Перетащите сюда блоки формулы</div>';
+            previewFormula.innerHTML = '<span style="color: #6c757d; font-style: italic;">Формула появится здесь после сборки</span>';
+            feedback.className = 'feedback';
+            feedback.textContent = '';
+            blockCount.textContent = '0';
+            shuffleStatus.textContent = 'Нет';
+            shuffleStatus.parentElement.parentElement.querySelector('h4').style.color = '';
+            
+            showFeedback('Все настройки сброшены', 'success');
+            
+            if (window.MathJax) {
+                MathJax.typesetPromise([previewFormula]);
+            }
+        }
+        
+        // Добавляем обработчики событий
+        generateBtn.addEventListener('click', generateFormulaBlocks);
+        saveBtn.addEventListener('click', saveHtmlFile);
+        resetBtn.addEventListener('click', resetAll);
+        checkBtn.addEventListener('click', checkFormula);
+        shuffleBtn.addEventListener('click', shuffleBlocks);
+        showSolutionBtn.addEventListener('click', showSolution);
+        
+        // Добавляем обработчики для примеров формул
+        examplesList.addEventListener('click', function(e) {
+            const exampleItem = e.target.closest('.example-item');
+            if (exampleItem && exampleItem.dataset.formula) {
+                formulaInput.value = exampleItem.dataset.formula;
+                
+                // Подсвечиваем выбранный пример
+                document.querySelectorAll('.example-item').forEach(item => {
+                    item.style.borderColor = '#e9ecef';
+                });
+                exampleItem.style.borderColor = '#4361ee';
+                
+                showFeedback('Формула загружена. Теперь создайте головоломку!', 'success');
+            }
+        });
+        
+        // Добавляем возможность отправки формулы по Enter
+        formulaInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                generateFormulaBlocks();
+            }
+        });
+        
+        // Инициализируем при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Перерисовываем MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+            
+            // Показываем приветственное сообщение
+            setTimeout(() => {
+                showFeedback('Добро пожаловать в FormulaPuzzle! Введите формулу или выберите пример, затем создайте головоломку.', 'success');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
