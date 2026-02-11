@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+  <question type="multichoice">
+    <name>
+      <text>Рабочий (ходовой) парк подвижного состава</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Что называется рабочим (ходовым) парком подвижного состава?</p>]]></text>
+    </questiontext>
+    <answer fraction="100">
+      <text>Исправный, годный к эксплуатации парк автомобилей (тягачей и прицепов), которым можно осуществлять перевозки</text>
+    </answer>
+    <answer fraction="0">
+      <text>Весь инвентарный парк автомобилей предприятия независимо от технического состояния</text>
+    </answer>
+    <answer fraction="0">
+      <text>Только автомобили, находящиеся в данный момент в движении на линии</text>
+    </answer>
+    <answer fraction="0">
+      <text>Парк автомобилей, прошедших техническое обслуживание в текущем месяце</text>
+    </answer>
+    <shuffleanswers>1</shuffleanswers>
+    <single>true</single>
+  </question>
+  
+  <question type="multichoice">
+    <name>
+      <text>Формула списочного парка</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Укажите правильную формулу для определения списочного парка подвижного состава:</p>]]></text>
+    </questiontext>
+    <answer fraction="100">
+      <text>A<sub>с</sub> = A<sub>сгэ</sub> + A<sub>ср</sub></text>
+    </answer>
+    <answer fraction="0">
+      <text>A<sub>с</sub> = A<sub>сэ</sub> + A<sub>сп</sub></text>
+    </answer>
+    <answer fraction="0">
+      <text>A<sub>с</sub> = A<sub>сгэ</sub> – A<sub>ср</sub></text>
+    </answer>
+    <answer fraction="0">
+      <text>A<sub>с</sub> = A<sub>сэ</sub> + A<sub>сп</sub> + A<sub>ср</sub></text>
+    </answer>
+    <shuffleanswers>1</shuffleanswers>
+    <single>true</single>
+  </question>
+  
+  <question type="multichoice">
+    <name>
+      <text>Коэффициент технической готовности</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Как рассчитывается коэффициент технической готовности α<sub>т</sub>?</p>]]></text>
+    </questiontext>
+    <answer fraction="100">
+      <text>α<sub>т</sub> = АД<sub>сгэ</sub> / (АД<sub>сгэ</sub> + АД<sub>ср</sub>)</text>
+    </answer>
+    <answer fraction="0">
+      <text>α<sub>т</sub> = АД<sub>сэ</sub> / АД<sub>с</sub></text>
+    </answer>
+    <answer fraction="0">
+      <text>α<sub>т</sub> = АД<sub>сэ</sub> / (АД<sub>с</sub> – АД<sub>сп</sub>)</text>
+    </answer>
+    <answer fraction="0">
+      <text>α<sub>т</sub> = АД<sub>ср</sub> / АД<sub>с</sub></text>
+    </answer>
+    <shuffleanswers>1</shuffleanswers>
+    <single>true</single>
+  </question>
+  
+  <question type="multichoice">
+    <name>
+      <text>Структура календарных дней</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Как правильно распределяются календарные дни Д<sub>к</sub> для каждой единицы подвижного состава?</p>]]></text>
+    </questiontext>
+    <answer fraction="100">
+      <text>Д<sub>к</sub> = Д<sub>э</sub> + Д<sub>п</sub> + Д<sub>р</sub>, где Д<sub>э</sub> – дни в эксплуатации, Д<sub>п</sub> – дни в простое в готовом состоянии, Д<sub>р</sub> – дни в ремонте</text>
+    </answer>
+    <answer fraction="0">
+      <text>Д<sub>к</sub> = Д<sub>э</sub> + Д<sub>р</sub>, где Д<sub>э</sub> – дни в эксплуатации, Д<sub>р</sub> – дни в ремонте</text>
+    </answer>
+    <answer fraction="0">
+      <text>Д<sub>к</sub> = Д<sub>э</sub> + Д<sub>п</sub>, где Д<sub>э</sub> – дни в эксплуатации, Д<sub>п</sub> – дни простоя</text>
+    </answer>
+    <answer fraction="0">
+      <text>Д<sub>к</sub> = Д<sub>р</sub> + Д<sub>п</sub>, где Д<sub>р</sub> – дни ремонта, Д<sub>п</sub> – праздничные дни</text>
+    </answer>
+    <shuffleanswers>1</shuffleanswers>
+    <single>true</single>
+  </question>
+  
+  <question type="multichoice">
+    <name>
+      <text>Коэффициент выпуска</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Что характеризует коэффициент выпуска α<sub>в</sub> и по какой формуле он определяется?</p>]]></text>
+    </questiontext>
+    <answer fraction="100">
+      <text>Степень использования технически исправного парка; α<sub>в</sub> = АД<sub>сэ</sub> / (АД<sub>с</sub> – АД<sub>сп</sub>)</text>
+    </answer>
+    <answer fraction="0">
+      <text>Долю автомобилей, находящихся в ремонте; α<sub>в</sub> = АД<sub>ср</sub> / АД<sub>с</sub></text>
+    </answer>
+    <answer fraction="0">
+      <text>Эффективность использования времени на линии; α<sub>в</sub> = Т<sub>Д</sub> / Т<sub>н</sub></text>
+    </answer>
+    <answer fraction="0">
+      <text>Общую готовность парка к работе; α<sub>в</sub> = АД<sub>сгэ</sub> / АД<sub>с</sub></text>
+    </answer>
+    <shuffleanswers>1</shuffleanswers>
+    <single>true</single>
+  </question>
+</quiz>
